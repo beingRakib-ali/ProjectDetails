@@ -13,7 +13,6 @@ namespace ProjectDetails.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "Status",
                 table: "paymentDetails",
-                type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
         }

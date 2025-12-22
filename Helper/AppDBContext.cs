@@ -10,6 +10,7 @@ namespace ProjectDetails.Helper
         }
 
         public DbSet<paymentDetails> paymentDetails { get; set; }
+        public DbSet<Category_Tbl> Category_Tbl { get; set; }
 
     }
    

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ProjectDetails.Helper;
@@ -11,9 +12,11 @@ using ProjectDetails.Helper;
 namespace ProjectDetails.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20251222033637_ConvertIdToIdentity")]
+    partial class ConvertIdToIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,51 +24,6 @@ namespace ProjectDetails.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("ProjectDetails.Models.Category_Tbl", b =>
-                {
-                    b.Property<int>("CategoryID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CategoryID"));
-
-                    b.Property<string>("CategoryDescription")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("CategoryName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("DeletedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("MaterialID")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("StatusID")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("keyEntry1")
-                        .HasColumnType("text");
-
-                    b.Property<string>("keyEntry2")
-                        .HasColumnType("text");
-
-                    b.Property<string>("keyEntry3")
-                        .HasColumnType("text");
-
-                    b.HasKey("CategoryID");
-
-                    b.ToTable("Category_Tbl");
-                });
 
             modelBuilder.Entity("ProjectDetails.Models.paymentDetails", b =>
                 {

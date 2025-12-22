@@ -15,17 +15,16 @@ namespace ProjectDetails.Migrations
                 name: "paymentDetails",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProjectName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TotalCost = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShahadotAmount = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    JonyAmount = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShahadotStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    JonyStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PaidAmountPercentage = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(nullable: false),
+                    ProjectName = table.Column<string>(nullable: false),
+                    Date = table.Column<DateTime>(nullable: false),
+                    Description = table.Column<string>(nullable: false),
+                    TotalCost = table.Column<string>(nullable: false),
+                    ShahadotAmount = table.Column<string>(nullable: false),
+                    JonyAmount = table.Column<string>(nullable: false),
+                    ShahadotStatus = table.Column<string>(nullable: false),
+                    JonyStatus = table.Column<string>(nullable: false),
+                    PaidAmountPercentage = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {

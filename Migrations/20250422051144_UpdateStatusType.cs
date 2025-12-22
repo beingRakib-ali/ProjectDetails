@@ -13,10 +13,8 @@ namespace ProjectDetails.Migrations
             migrationBuilder.AlterColumn<int>(
                 name: "Status",
                 table: "paymentDetails",
-                type: "int",
                 nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)");
+                oldClrType: typeof(string));
         }
 
         /// <inheritdoc />
@@ -25,10 +23,8 @@ namespace ProjectDetails.Migrations
             migrationBuilder.AlterColumn<string>(
                 name: "Status",
                 table: "paymentDetails",
-                type: "nvarchar(max)",
                 nullable: false,
-                oldClrType: typeof(int),
-                oldType: "int");
+                oldClrType: typeof(int));
         }
     }
 }
