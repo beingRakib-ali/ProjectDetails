@@ -50,6 +50,25 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "An error occurred while migrating or initializing the database.");
     }
 }
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDBContext>();
+
+        if (app.Environment.IsDevelopment())
+        {
+            context.Database.Migrate();
+        }
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Database migration failed.");
+    }
+}
+
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 app.Urls.Add($"http://0.0.0.0:{port}");
