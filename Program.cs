@@ -21,7 +21,7 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile));  // Automatically sca
 
 // Register DbContext (PostgreSQL)
 builder.Services.AddDbContext<AppDBContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
