@@ -5,27 +5,40 @@ using ProjectDetails.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
-
 builder.Services.AddControllers();
-
-// Register Swagger services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<PaymentService>();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
+// ---------- FIX CONNECTION STRING ----------
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-builder.Services.AddScoped<PaymentService>();  // Register the PaymentService for dependency injection
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
-// Register AutoMapper with the profile in the Helper namespace
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));  // Automatically scans for profiles like Mapper
+    if (!string.IsNullOrWhiteSpace(databaseUrl))
+    {
+        var uri = new Uri(databaseUrl);
+        var userInfo = uri.UserInfo.Split(':');
 
-// Register DbContext (PostgreSQL)
+        connectionString =
+            $"Host={uri.Host};" +
+            $"Port={uri.Port};" +
+            $"Database={uri.AbsolutePath.TrimStart('/')};" +
+            $"Username={userInfo[0]};" +
+            $"Password={userInfo[1]};" +
+            $"SSL Mode=Require;Trust Server Certificate=true;";
+    }
+}
+
 builder.Services.AddDbContext<AppDBContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
+// -----------------------------------------
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -35,43 +48,23 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 app.MapControllers();
 
-// Apply pending EF Core migrations at startup (if any)
+// ---------- SAFE MIGRATION ----------
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
     try
     {
-        var context = services.GetRequiredService<AppDBContext>();
-        context.Database.Migrate();
+        var db = scope.ServiceProvider.GetRequiredService<AppDBContext>();
+        db.Database.Migrate();
     }
     catch (Exception ex)
     {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while migrating or initializing the database.");
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Database migration failed");
     }
 }
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<AppDBContext>();
-
-        if (app.Environment.IsDevelopment())
-        {
-            context.Database.Migrate();
-        }
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Database migration failed.");
-    }
-}
-
+// -----------------------------------
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 app.Urls.Add($"http://0.0.0.0:{port}");
-
 
 app.Run();
