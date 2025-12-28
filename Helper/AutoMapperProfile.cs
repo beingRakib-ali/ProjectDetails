@@ -10,7 +10,7 @@ namespace ProjectDetails.Helper
         public AutoMapperProfile()
         {
             CreateMap<paymentDetails, Payment_ViewModels>().ReverseMap();
-
+            CreateMap<Category_Tbl, Category_ViewModel>().ReverseMap();
         }
 
 
