@@ -12,6 +12,11 @@ namespace ProjectDetails.Helper
         public DbSet<paymentDetails> paymentDetails { get; set; }
         public DbSet<Category_Tbl> Category_Tbl { get; set; }
 
+        public DbSet<Product_Tbl> Product_Tbl { get; set; }
+        public DbSet<ProductImage_Tbl> ProductImage_Tbl { get; set; }
+        public DbSet<Order_Tbl> Order_Tbl { get; set; }
+        public DbSet<Blogs_Tbl> Blogs_Tbl { get; set; }
+
     }
-   
+
 }

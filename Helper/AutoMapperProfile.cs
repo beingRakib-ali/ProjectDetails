@@ -11,6 +11,10 @@ namespace ProjectDetails.Helper
         {
             CreateMap<paymentDetails, Payment_ViewModels>().ReverseMap();
             CreateMap<Category_Tbl, Category_ViewModel>().ReverseMap();
+            CreateMap<Blogs_Tbl,Blog_ViewModel>().ReverseMap();
+            CreateMap<Order_Tbl,Order_ViewModel>().ReverseMap();
+            CreateMap<Product_Tbl,ProductCreate_VM>().ReverseMap();
+            //CreateMap<ProductImage_Tbl,ProductImage_VM>().ReverseMap();
         }
 
 

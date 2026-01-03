@@ -9,7 +9,7 @@ namespace ProjectDetails.Models
         [Required]
         public string CategoryName { get; set; }
         public string CategoryDescription { get; set; } = null!;
-        //public string CategoryType { get; set; }
+        public int CategoryTypeID { get; set; }
         public int StatusId { get; set; } = 0;
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public int CreatedBy { get; set; }

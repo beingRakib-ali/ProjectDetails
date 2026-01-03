@@ -72,11 +72,12 @@ namespace ProjectDetails.Services
             {
                 return null;
             }
-            var existingCategory = await _context.Category_Tbl.Where(a => a.StatusId != 255).FirstOrDefaultAsync();
+            var existingCategory = await _context.Category_Tbl.Where(a => a.StatusId != 255 && a.CategoryId==category.CategoryId).FirstOrDefaultAsync();
             if (existingCategory == null)
             {
                 return null;
-            }
+            }            
+
 
             var data = _mapper.Map<Category_Tbl>(category);
             _context.Entry(existingCategory).CurrentValues.SetValues(data);
@@ -97,6 +98,50 @@ namespace ProjectDetails.Services
             await _context.SaveChangesAsync();
             return true;
         }
+
+
+
+        public async Task<List<Category_ViewModel>>SortedByCategory(string sortOrder)
+        {
+            var categories = from c in _context.Category_Tbl
+                             where c.StatusId != 255
+                             select c;
+
+            switch (sortOrder.ToLower())
+            {
+                case "name_desc":
+                    categories = categories.OrderByDescending(c => c.CategoryName);
+                    break;
+                case "name_asc":
+                    categories = categories.OrderBy(c => c.CategoryName);
+                    break;
+                case "date_desc":
+                    categories = categories.OrderByDescending(c => c.CreatedDate);
+                    break;
+                case "date_asc":
+                    categories = categories.OrderBy(c => c.CreatedDate);
+                    break;
+                default:
+                    categories = categories.OrderBy(c => c.CategoryName);
+                    break;
+            }
+
+            var categoryList = await categories.ToListAsync();
+            return _mapper.Map<List<Category_ViewModel>>(categoryList);
+        }
+
+
+        public async Task<List<Category_ViewModel>> FilterBySameCategory(int CategoryTypeID)
+        {
+
+            var data = await _context.Category_Tbl
+                        .Where(c => c.StatusId != 255 && c.CategoryId == CategoryTypeID)
+                        .ToListAsync();
+            return _mapper.Map<List<Category_ViewModel>>(data);
+
+        }
+
+
 
     }
 }

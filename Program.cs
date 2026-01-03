@@ -16,6 +16,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<PaymentService>();  // Register the PaymentService for dependency injection
 builder.Services.AddScoped<CategoryService>();  // Register the CategoryService for dependency injection
+builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<BlogService>();
+
 
 // Register AutoMapper with the profile in the Helper namespace
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));  // Automatically scans for profiles like Mapper
@@ -24,9 +28,22 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile));  // Automatically sca
 builder.Services.AddDbContext<AppDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("dbcs")));
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+    policy =>
+    {
+        policy.AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
+//Configure the HTTP request pipeline
+
 //if (app.Environment.IsDevelopment())
 //{
 //    app.UseSwagger();
@@ -35,10 +52,25 @@ var app = builder.Build();
 //}
 
 
-using (var scope = app.Services.CreateScope())
+
+//using (var scope = app.Services.CreateScope())
+//{
+//    var db = scope.ServiceProvider.GetRequiredService<AppDBContext>();
+//    db.Database.Migrate();
+//}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var db = scope.ServiceProvider.GetRequiredService<AppDBContext>();
+//    db.Database.EnsureCreated();
+//}
+
+if (app.Environment.IsDevelopment())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDBContext>();
-    db.Database.Migrate();
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDBContext>();
+        db.Database.Migrate();
+    }
 }
 
 
@@ -48,7 +80,8 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProjectDetails API v1");
     c.RoutePrefix = "swagger";
 });
-
+app.UseStaticFiles(); // serve images
+app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
 
