@@ -23,14 +23,31 @@ namespace ProjectDetails.Services
 
         public async Task<List<Blogs_ViewModels>> GetAllBlogs()
         {
-            var data = await _db.Blogs_Tbl.Where(a => a.StatusID != 255).ToListAsync();
-            if (data == null)
-            {
-                return null;
-            }
+            var data = await (from b in _db.Blogs_Tbl.Where(a => a.StatusID != 255)
+                              join c in _db.BlogCategory_Tbl.Where(a => a.StatusId != 255)
+                              on b.BlogCategoryID equals c.CategoryId
+                              select new
+                              {
+                                  b.BlogID,
+                                  b.Name,
+                                  b.Description,
+                                  b.StatusID,
+                                  //b.CreatedBy,
+                                  //b.CreatedDate,
+                                  b.ProductID,
+                                  BlogCategoryName = c.CategoryName,
+                                  BlogCategoryDescription = c.CategoryDescription
+                              }).ToListAsync();
+
+            if (data == null || !data.Any())
+                return new List<Blogs_ViewModels>();
+
+            // Map anonymous object to your ViewModel
             var result = _mapper.Map<List<Blogs_ViewModels>>(data);
+
             return result;
         }
+
 
 
 
@@ -212,6 +229,96 @@ namespace ProjectDetails.Services
             return true;
 
         }
+
+        public async Task<List<BlogCategory_ViewModel>> Get_AllBlogCategory()
+        {
+            var data = await _db.BlogCategory_Tbl.Where(a => a.StatusId != 255).ToListAsync();
+            if (data == null)
+            {
+                return null;
+            }
+            var result = _mapper.Map<List<BlogCategory_ViewModel>>(data);
+            return result;
+        }
+
+        public async Task<BlogCategory_ViewModel> Get_BlogCategoryByID(int BlogID)
+        {
+            var data = await _db.BlogCategory_Tbl.Where(a => a.StatusId != 255 && a.CategoryId == BlogID).FirstOrDefaultAsync();
+            if (data == null)
+            {
+                return null;
+            }
+            var result = _mapper.Map<BlogCategory_ViewModel>(data);
+            return result;
+
+        }
+
+        public async Task<BlogCategory_ViewModel>CreateBlogCategory(BlogCategory_ViewModel blogCategory)
+        {
+            if (blogCategory == null)
+            {
+                return null;
+            }
+            var data = _mapper.Map<BlogCategory_Tbl>(blogCategory);
+            await _db.BlogCategory_Tbl.AddAsync(data);
+            await _db.SaveChangesAsync();
+            return await Get_BlogCategoryByID(data.CategoryId);
+        }
+
+        public async Task<BlogCategory_ViewModel> UpdateBlogCategory(BlogCategory_ViewModel model)
+        {
+            var data = await _db.BlogCategory_Tbl.Where(a => a.StatusId != 255 && a.CategoryId == model.CategoryId).FirstOrDefaultAsync();
+            if (data == null)
+            {
+                return null;
+            }
+            var result = _mapper.Map<BlogCategory_Tbl>(model);
+            _db.Entry(data).CurrentValues.SetValues(result);
+            await _db.SaveChangesAsync();
+            return await Get_BlogCategoryByID(result.CategoryId);
+        }
+
+        public async Task<bool> DeleteBlogCategory(int BlogCategory)
+        {
+            var data = await _db.BlogCategory_Tbl.Where(a => a.StatusId != 255 && a.CategoryId == BlogCategory).FirstOrDefaultAsync();
+            if (data == null)
+            {
+                return false;
+            }
+            data.StatusId = 255;
+            await _db.SaveChangesAsync();
+            return true;
+
+        }
+
+
+        public async Task<List<object>> getCategoryWiseBlogList(int CategoryID)
+        {
+            var data = await (
+                from b in _db.Blogs_Tbl
+                join bc in _db.BlogCategory_Tbl
+                    on b.BlogCategoryID equals bc.CategoryId
+                where b.StatusID != 255
+                      && bc.StatusId != 255
+                      && b.BlogCategoryID == CategoryID
+                select new
+                {
+                    b.BlogID,
+                    b.Name,
+                    b.Description,
+                    b.BlogCategoryID,
+                    b.ProductID,
+                    CategoryName = bc.CategoryName
+                }
+            ).ToListAsync<object>();
+
+            return data;
+        }
+
+
+
+
+
 
 
     }

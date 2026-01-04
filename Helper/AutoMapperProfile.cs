@@ -14,6 +14,7 @@ namespace ProjectDetails.Helper
             CreateMap<Blogs_Tbl,Blogs_ViewModels>().ReverseMap();
             CreateMap<Order_Tbl,Order_ViewModel>().ReverseMap();
             CreateMap<Product_Tbl,ProductCreate_VM>().ReverseMap();
+            CreateMap<BlogCategory_Tbl, BlogCategory_ViewModel>().ReverseMap();
             //CreateMap<ProductImage_Tbl,ProductImage_VM>().ReverseMap();
         }
 

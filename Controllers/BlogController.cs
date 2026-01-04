@@ -317,5 +317,59 @@ namespace ProjectDetails.Controllers
 
 
 
+        [HttpGet("Get_AllBlogsCategory")]
+        public async Task<IActionResult> Get_AllBlogsCategory()
+        {
+            var data = await _blogService.Get_AllBlogCategory();
+            return Ok(data);
+        }
+
+        [HttpGet("Get_BlogCategoryByID")]
+        public async Task<IActionResult> Get_BlogCategoryByID(int BlogCategoryID)
+        {
+            var data = await _blogService.Get_BlogCategoryByID(BlogCategoryID);
+            return Ok(data);
+        }
+
+        [HttpPost("Create_BlogCategory")]
+        public async Task<IActionResult> Create_BlogCategory(BlogCategory_ViewModel model)
+        {
+            var data = await _blogService.CreateBlogCategory(model);
+            return Ok(data);
+        }
+
+        [HttpPut("Update_BlogCategory")]
+        public async Task<IActionResult> Update_BlogCategory(BlogCategory_ViewModel model)
+        {
+            var data = await _blogService.UpdateBlogCategory(model);
+            return Ok(data);
+        }
+
+        [HttpGet("SortedByBlogCategoryID")]
+        public async Task<IActionResult> getCategoryWiseBlogList(int BlogCategoryID)
+        {
+            var data = await _blogService.getCategoryWiseBlogList(BlogCategoryID);
+            return Ok(data);
+        }
+
+
+
+        [HttpDelete("Delete_BlogCategory")]
+        public async Task<IActionResult> Delete_BlogCategory(int BlogCategoryID)
+        {
+            var data = await _blogService.DeleteBlogCategory(BlogCategoryID);
+            return Ok(data);
+        }
+
+
+
+
+
+
+
+
+
+
+
     }
 }
