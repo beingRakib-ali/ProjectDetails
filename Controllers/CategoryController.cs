@@ -25,11 +25,11 @@ namespace ProjectDetails.Controllers
             return Ok(data);
         }
 
-        [HttpGet("GetCategoryById/{id}")]
-        public async Task<ActionResult<Category_ViewModel>> GetCategoryById(int id)
+        [HttpGet("GetCategoryById")]
+        public async Task<ActionResult<Category_ViewModel>> GetCategoryById(int CategoryID)
         {
 
-            var data = await _categoryService.GetCategoryById(id);
+            var data = await _categoryService.GetCategoryById(CategoryID);
 
             return Ok(data);
         }

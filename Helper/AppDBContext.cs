@@ -16,6 +16,9 @@ namespace ProjectDetails.Helper
         public DbSet<ProductImage_Tbl> ProductImage_Tbl { get; set; }
         public DbSet<Order_Tbl> Order_Tbl { get; set; }
         public DbSet<Blogs_Tbl> Blogs_Tbl { get; set; }
+        public DbSet<BlogImage_Tbl> BlogImage_Tbl { get;set; }
+        public DbSet<BlogCategory_Tbl> BlogCategory_Tbl { get; set; }
+
 
     }
 

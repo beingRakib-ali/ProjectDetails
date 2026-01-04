@@ -29,7 +29,17 @@ using ProjectDetails.ViewModels;
                 ProductName = vm.ProductName,
                 Description = vm.Description,
                 Price = vm.Price,
-                Stock = vm.Stock
+                Stock = vm.Stock,
+                CategoryId = vm.CategoryID,
+                StatusID = 0, // Active
+                SKU = vm.SKU,
+                Tags = vm.Tags,
+                MaterialName = vm.MaterialName,
+                MaterialCode = vm.MaterialCode,
+                //Review = vm.Review,
+                ExpireDate = vm.ExpireDate,
+                //CreatedBy = vm.CreatedBy,
+
             };
 
             _context.Product_Tbl.Add(product);

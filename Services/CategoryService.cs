@@ -40,9 +40,9 @@ namespace ProjectDetails.Services
         }
 
 
-        public async Task<Category_ViewModel> GetCategoryById(int id)
+        public async Task<Category_ViewModel> GetCategoryById(int CategoryID)
         {
-            var category = await _context.Category_Tbl.Where(a => a.StatusId != 255).FirstOrDefaultAsync();
+            var category = await _context.Category_Tbl.Where(a => a.StatusId != 255 && a.CategoryId == CategoryID).FirstOrDefaultAsync();
             if (category == null)
             {
                 return null;

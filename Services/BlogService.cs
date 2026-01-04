@@ -21,27 +21,27 @@ namespace ProjectDetails.Services
 
 
 
-        public async Task<List<Blog_ViewModel>> GetAllBlogs()
+        public async Task<List<Blogs_ViewModels>> GetAllBlogs()
         {
             var data = await _db.Blogs_Tbl.Where(a => a.StatusID != 255).ToListAsync();
             if (data == null)
             {
                 return null;
             }
-            var result = _mapper.Map<List<Blog_ViewModel>>(data);
+            var result = _mapper.Map<List<Blogs_ViewModels>>(data);
             return result;
         }
 
 
 
-        public async Task<Blog_ViewModel> GetBlogById(int BlogID)
+        public async Task<Blogs_ViewModels> GetBlogById(int BlogID)
         {
             var blog = await _db.Blogs_Tbl.Where(a => a.StatusID != 255 && a.BlogID == BlogID).FirstOrDefaultAsync();
             if (blog == null)
             {
                 return null;
             }
-            var data = _mapper.Map<Blog_ViewModel>(blog);
+            var data = _mapper.Map<Blogs_ViewModels>(blog);
             return data;
         }
 
@@ -83,119 +83,119 @@ namespace ProjectDetails.Services
         //}
 
 
-        public async Task<Blog_ViewModel> CreateBlog(Blog_ViewModel blog)
-        {
-            if (blog == null)
-                return null;
+        //public async Task<Blog_ViewModel> CreateBlog(Blog_ViewModel blog)
+        //{
+        //    if (blog == null)
+        //        return null;
 
-            string imagePath = null;
+        //    string imagePath = null;
 
-            if (blog.ImageFile != null && blog.ImageFile.Length > 0)
-            {
-                if (string.IsNullOrEmpty(_env.WebRootPath))
-                    throw new Exception("WebRootPath is NULL. wwwroot folder missing.");
+        //    if (blog.ImageFile != null && blog.ImageFile.Length > 0)
+        //    {
+        //        if (string.IsNullOrEmpty(_env.WebRootPath))
+        //            throw new Exception("WebRootPath is NULL. wwwroot folder missing.");
 
-                var folderPath = Path.Combine(_env.WebRootPath, "BlogImages");
+        //        var folderPath = Path.Combine(_env.WebRootPath, "BlogImages");
 
-                if (!Directory.Exists(folderPath))
-                    Directory.CreateDirectory(folderPath);
+        //        if (!Directory.Exists(folderPath))
+        //            Directory.CreateDirectory(folderPath);
 
-                var fileName = Guid.NewGuid() + Path.GetExtension(blog.ImageFile.FileName);
-                var fullPath = Path.Combine(folderPath, fileName);
+        //        var fileName = Guid.NewGuid() + Path.GetExtension(blog.ImageFile.FileName);
+        //        var fullPath = Path.Combine(folderPath, fileName);
 
-                using (var stream = new FileStream(fullPath, FileMode.Create))
-                {
-                    await blog.ImageFile.CopyToAsync(stream);
-                }
+        //        using (var stream = new FileStream(fullPath, FileMode.Create))
+        //        {
+        //            await blog.ImageFile.CopyToAsync(stream);
+        //        }
 
-                imagePath = "/BlogImages/" + fileName;
-            }
+        //        imagePath = "/BlogImages/" + fileName;
+        //    }
 
-            var data = new Blogs_Tbl
-            {
-                CategoryID = blog.CategoryID,
-                ProductID = blog.ProductID,
-                Name = blog.Name,
-                Description = blog.Description,
-                ImagePath = imagePath,
-                StatusID = blog.StatusID,
-                CreatedBy = blog.CreatedBy,
-                CreatedDate = DateTime.Now
-            };
+        //    var data = new Blogs_Tbl
+        //    {
+        //        CategoryID = blog.CategoryID,
+        //        ProductID = blog.ProductID,
+        //        Name = blog.Name,
+        //        Description = blog.Description,
+        //        ImagePath = imagePath,
+        //        StatusID = blog.StatusID,
+        //        CreatedBy = blog.CreatedBy,
+        //        CreatedDate = DateTime.Now
+        //    };
 
-            await _db.Blogs_Tbl.AddAsync(data);
-            await _db.SaveChangesAsync();
+        //    await _db.Blogs_Tbl.AddAsync(data);
+        //    await _db.SaveChangesAsync();
 
-            return new Blog_ViewModel
-            {
-                BlogID = data.BlogID,
-                CategoryID = data.CategoryID,
-                ProductID = data.ProductID,
-                Name = data.Name,
-                Description = data.Description,
-                ImagePath = data.ImagePath,
-                StatusID = data.StatusID,
-                CreatedBy = data.CreatedBy
-            };
-        }
-
-
+        //    return new Blog_ViewModel
+        //    {
+        //        BlogID = data.BlogID,
+        //        CategoryID = data.CategoryID,
+        //        ProductID = data.ProductID,
+        //        Name = data.Name,
+        //        Description = data.Description,
+        //        ImagePath = data.ImagePath,
+        //        StatusID = data.StatusID,
+        //        CreatedBy = data.CreatedBy
+        //    };
+        //}
 
 
 
-        public async Task<Blog_ViewModel> UpdateBlog(Blog_ViewModel blog)
-        {
-            var existingBlog = await _db.Blogs_Tbl
-                .FirstOrDefaultAsync(x => x.BlogID == blog.BlogID && x.StatusID != 255);
 
-            if (existingBlog == null)
-                return null;
 
-            // IMAGE UPDATE
-            if (blog.ImageFile != null && blog.ImageFile.Length > 0)
-            {
-                // delete old image
-                if (!string.IsNullOrEmpty(existingBlog.ImagePath))
-                {
-                    var oldPath = Path.Combine(
-                        Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        existingBlog.ImagePath.TrimStart('/')
-                    );
+        //public async Task<Blog_ViewModel> UpdateBlog(Blog_ViewModel blog)
+        //{
+        //    var existingBlog = await _db.Blogs_Tbl
+        //        .FirstOrDefaultAsync(x => x.BlogID == blog.BlogID && x.StatusID != 255);
 
-                    if (File.Exists(oldPath))
-                        File.Delete(oldPath);
-                }
+        //    if (existingBlog == null)
+        //        return null;
 
-                // save new image
-                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/BlogImages");
+        //    // IMAGE UPDATE
+        //    if (blog.ImageFile != null && blog.ImageFile.Length > 0)
+        //    {
+        //        // delete old image
+        //        if (!string.IsNullOrEmpty(existingBlog.ImagePath))
+        //        {
+        //            var oldPath = Path.Combine(
+        //                Directory.GetCurrentDirectory(),
+        //                "wwwroot",
+        //                existingBlog.ImagePath.TrimStart('/')
+        //            );
 
-                if (!Directory.Exists(folderPath))
-                    Directory.CreateDirectory(folderPath);
+        //            if (File.Exists(oldPath))
+        //                File.Delete(oldPath);
+        //        }
 
-                var fileName = Guid.NewGuid() + Path.GetExtension(blog.ImageFile.FileName);
-                var newPath = Path.Combine(folderPath, fileName);
+        //        // save new image
+        //        var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/BlogImages");
 
-                using (var stream = new FileStream(newPath, FileMode.Create))
-                {
-                    await blog.ImageFile.CopyToAsync(stream);
-                }
+        //        if (!Directory.Exists(folderPath))
+        //            Directory.CreateDirectory(folderPath);
 
-                existingBlog.ImagePath = "/BlogImages/" + fileName;
-            }
+        //        var fileName = Guid.NewGuid() + Path.GetExtension(blog.ImageFile.FileName);
+        //        var newPath = Path.Combine(folderPath, fileName);
 
-            // UPDATE FIELDS
-            existingBlog.CategoryID = blog.CategoryID;
-            existingBlog.ProductID = blog.ProductID;
-            existingBlog.Name = blog.Name;
-            existingBlog.Description = blog.Description;
-            existingBlog.StatusID = blog.StatusID;
-            existingBlog.CreatedBy = blog.CreatedBy;
+        //        using (var stream = new FileStream(newPath, FileMode.Create))
+        //        {
+        //            await blog.ImageFile.CopyToAsync(stream);
+        //        }
 
-            await _db.SaveChangesAsync();
+        //        existingBlog.ImagePath = "/BlogImages/" + fileName;
+        //    }
 
-            return _mapper.Map<Blog_ViewModel>(existingBlog);
-        }
+        //    // UPDATE FIELDS
+        //    existingBlog.CategoryID = blog.CategoryID;
+        //    existingBlog.ProductID = blog.ProductID;
+        //    existingBlog.Name = blog.Name;
+        //    existingBlog.Description = blog.Description;
+        //    existingBlog.StatusID = blog.StatusID;
+        //    existingBlog.CreatedBy = blog.CreatedBy;
+
+        //    await _db.SaveChangesAsync();
+
+        //    return _mapper.Map<Blog_ViewModel>(existingBlog);
+        //}
 
 
         public async Task<bool> DeleteBlog(int BlogID)
