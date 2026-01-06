@@ -10,12 +10,14 @@
         public string? Description { get; set; }
         public string CategoryName { get; set; }
         public string CategoryDescription { get; set; }
+        public List<string> Images { get; set; }
+        public string? Tags { get; set; }
 
         //public IFormFile? ImageFile { get; set; }   
         //public string? ImagePath { get; set; }     
 
         //public int StatusID { get; set; }
-        //public int CreatedBy { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 
 

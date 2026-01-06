@@ -13,6 +13,7 @@ namespace ProjectDetails.Models
         public string? Description { get; set; }
         public int StatusID { get; set; } = 0;
         public int CreatedBy { get; set; }
+        public string? Tags { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

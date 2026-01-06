@@ -10,6 +10,7 @@ namespace ProjectDetails.ViewModels
         public int ProductID { get; set; }            // Required
         [Required]
         public string Name { get; set; }              // Required
+        public string? Tags { get; set; }
         public string? Description { get; set; }      // Optional
         public int StatusID { get; set; } = 0;
         public int CreatedBy { get; set; }

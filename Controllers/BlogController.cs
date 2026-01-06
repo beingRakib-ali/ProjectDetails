@@ -27,12 +27,20 @@ namespace ProjectDetails.Controllers
         }
 
 
-        [HttpGet("GetAll_Blogs")]
-        public async Task<IActionResult> Get()
+        //[HttpGet("GetAll_Blogs")]
+        //public async Task<IActionResult> Get()
+        //{
+        //    var data = await _blogService.GetAllBlogs();
+        //    return Ok(data);
+        //}
+        [HttpGet("blogs")]
+        public async Task<IActionResult> GetAllBlogs()
         {
             var data = await _blogService.GetAllBlogs();
             return Ok(data);
         }
+
+
 
 
         [HttpGet("GetBlogById")]
@@ -70,6 +78,7 @@ namespace ProjectDetails.Controllers
                 ProductID = vm.ProductID,
                 Name = vm.Name,
                 Description = vm.Description,
+                Tags = vm.Tags,
                 StatusID = vm.StatusID,
                 CreatedBy = vm.CreatedBy,
                 CreatedDate = DateTime.Now
@@ -188,125 +197,6 @@ namespace ProjectDetails.Controllers
 
 
 
-        //[HttpPost("CreateBlog")]
-        //public async Task<IActionResult> CreateBlog([FromForm] BlogDetails_ViewModel vm)
-        //{
-        //    if (vm.ImageFile == null || vm.ImageFile.Count == 0)
-        //        return BadRequest("No image uploaded");
-
-        //    var blogs = new Blogs_Tbl
-        //    {
-        //        BlogCategoryID = vm.BlogCategoryID,
-        //        ProductID = vm.ProductID,
-        //        Name = vm.Name,
-        //        Description = vm.Description,
-        //        StatusID = vm.StatusID,
-        //        CreatedBy = vm.CreatedBy,
-        //        CreatedDate = DateTime.Now
-        //    };
-
-        //    _context.Blogs_Tbl.Add(blogs);
-        //    await _context.SaveChangesAsync();
-
-        //    if (string.IsNullOrEmpty(_env.WebRootPath))
-        //        _env.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-
-        //    string folder = Path.Combine(_env.WebRootPath, "uploads", "BlogImages");
-        //    Directory.CreateDirectory(folder);
-
-        //    List<string> imageList = new();
-
-        //    foreach (var img in vm.ImageFile)
-        //    {
-        //        string fileName = Guid.NewGuid() + Path.GetExtension(img.FileName);
-        //        string filePath = Path.Combine(folder, fileName);
-
-        //        using var stream = new FileStream(filePath, FileMode.Create);
-        //        await img.CopyToAsync(stream);
-
-        //        string dbPath = "/uploads/BlogImages/" + fileName;
-
-        //        _context.BlogImage_Tbl.Add(new BlogImage_Tbl
-        //        {
-        //            BlogId = blogs.BlogID,
-        //            ImagePath = dbPath
-        //        });
-
-        //        imageList.Add(dbPath);
-        //    }
-
-        //    await _context.SaveChangesAsync();
-
-        //    return Ok(new
-        //    {
-        //        Message = "Blogs created successfully",
-        //        blogs.BlogID,
-        //        blogs.Name,
-        //        Images = imageList
-        //    });
-        //}
-
-
-
-        //[HttpPost("CreateBlog")]
-        //public async Task<IActionResult> CreateBlog([FromForm] BlogDetails_ViewModel vm)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState);
-
-        //    // 🔹 Ensure wwwroot exists (VERY IMPORTANT)
-        //    if (string.IsNullOrEmpty(_env.WebRootPath))
-        //        _env.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-
-        //    var blog = new Blogs_Tbl
-        //    {
-        //        CategoryID = vm.CategoryID,
-        //        ProductID = vm.ProductID,
-        //        Name = vm.Name,
-        //        Description = vm.Description,
-        //        StatusID = vm.StatusID,
-        //        CreatedBy = vm.CreatedBy,
-        //        CreatedDate = DateTime.Now
-        //    };
-
-        //    // 🔹 Image Upload
-        //    if (vm.ImageFile != null && vm.ImageFile.Length > 0)
-        //    {
-        //        string folder = Path.Combine(_env.WebRootPath, "uploads", "blogs");
-        //        Directory.CreateDirectory(folder);
-
-        //        string fileName = Guid.NewGuid() + Path.GetExtension(vm.ImageFile.FileName);
-        //        string fullPath = Path.Combine(folder, fileName);
-
-        //        using var stream = new FileStream(fullPath, FileMode.Create);
-        //        await vm.ImageFile.CopyToAsync(stream);
-
-        //        blog.ImagePath = "/uploads/blogs/" + fileName;
-        //    }
-
-        //    _context.Blogs_Tbl.Add(blog);
-        //    await _context.SaveChangesAsync();
-
-        //    return Ok(new
-        //    {
-        //        Message = "Blog created successfully",
-        //        blog.BlogID,
-        //        blog.Name,
-        //        blog.ImagePath
-        //    });
-        //}
-
-
-
-        //[HttpPut]
-        //[Route("UpdateBlog")]
-        //public async Task<IActionResult> UpdateBlog([FromForm] Blog_ViewModel model)
-        //{
-        //    var result = await _blogService.UpdateBlog(model);
-        //    return Ok(result);
-        //}
-
-
         [HttpDelete]
         [Route("DeleteBlogById")]
         public async Task<IActionResult> DeleteBlog(int BlogID)
@@ -317,12 +207,15 @@ namespace ProjectDetails.Controllers
 
 
 
-        [HttpGet("Get_AllBlogsCategory")]
-        public async Task<IActionResult> Get_AllBlogsCategory()
+        [HttpGet("GetAllCategory_Blogs")]
+        public async Task<IActionResult> Get_AllBlogCategory()
         {
-            var data = await _blogService.Get_AllBlogCategory();
-            return Ok(data);
+            var result = await _blogService.Get_AllBlogCategory();
+            return Ok(result);
         }
+
+
+
 
         [HttpGet("Get_BlogCategoryByID")]
         public async Task<IActionResult> Get_BlogCategoryByID(int BlogCategoryID)

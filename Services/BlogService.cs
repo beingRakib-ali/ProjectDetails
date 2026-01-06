@@ -23,43 +23,63 @@ namespace ProjectDetails.Services
 
         public async Task<List<Blogs_ViewModels>> GetAllBlogs()
         {
-            var data = await (from b in _db.Blogs_Tbl.Where(a => a.StatusID != 255)
-                              join c in _db.BlogCategory_Tbl.Where(a => a.StatusId != 255)
-                              on b.BlogCategoryID equals c.CategoryId
-                              select new
-                              {
-                                  b.BlogID,
-                                  b.Name,
-                                  b.Description,
-                                  b.StatusID,
-                                  //b.CreatedBy,
-                                  //b.CreatedDate,
-                                  b.ProductID,
-                                  BlogCategoryName = c.CategoryName,
-                                  BlogCategoryDescription = c.CategoryDescription
-                              }).ToListAsync();
-
-            if (data == null || !data.Any())
-                return new List<Blogs_ViewModels>();
-
-            // Map anonymous object to your ViewModel
-            var result = _mapper.Map<List<Blogs_ViewModels>>(data);
-
-            return result;
+            return await (
+                from b in _db.Blogs_Tbl
+                join c in _db.BlogCategory_Tbl
+                    on b.BlogCategoryID equals c.CategoryId
+                where b.StatusID != 255 && c.StatusId != 255
+                select new Blogs_ViewModels
+                {
+                    BlogID = b.BlogID,
+                    ProductID = b.ProductID,
+                    CategoryID = b.BlogCategoryID,
+                    Name = b.Name,
+                    Description = b.Description,
+                    CategoryName = c.CategoryName,
+                    CategoryDescription = c.CategoryDescription,
+                    Tags = b.Tags,
+                    CreatedDate = b.CreatedDate,
+                    Images = _db.BlogImage_Tbl
+                                .Where(img => img.BlogId == b.BlogID && img.StatusID != 255)
+                                .Select(img => img.ImagePath)
+                                .ToList()
+                }
+            ).ToListAsync();
         }
 
 
 
 
-        public async Task<Blogs_ViewModels> GetBlogById(int BlogID)
+
+        public async Task<object> GetBlogById(int BlogID)
         {
-            var blog = await _db.Blogs_Tbl.Where(a => a.StatusID != 255 && a.BlogID == BlogID).FirstOrDefaultAsync();
-            if (blog == null)
-            {
-                return null;
-            }
-            var data = _mapper.Map<Blogs_ViewModels>(blog);
-            return data;
+            //var blog = await _db.Blogs_Tbl.Where(a => a.StatusID != 255 && a.BlogID == BlogID).FirstOrDefaultAsync();
+
+            var blog = await (
+                from b in _db.Blogs_Tbl
+                join c in _db.BlogCategory_Tbl
+                    on b.BlogCategoryID equals c.CategoryId
+                where b.StatusID != 255 && c.StatusId != 255 && b.BlogID == BlogID
+                select new Blogs_ViewModels
+                {
+                    BlogID = b.BlogID,
+                    ProductID = b.ProductID,
+                    CategoryID = b.BlogCategoryID,
+                    Name = b.Name,
+                    Description = b.Description,
+                    CategoryName = c.CategoryName,
+                    CategoryDescription = c.CategoryDescription,
+                    Tags = b.Tags,
+                    CreatedDate = b.CreatedDate,
+                    Images = _db.BlogImage_Tbl
+                                .Where(img => img.BlogId == b.BlogID && img.StatusID != 255)
+                                .Select(img => img.ImagePath)
+                                .ToList()
+                }
+            ).FirstOrDefaultAsync();
+
+            //var data = _mapper.Map<Blogs_ViewModels>(blog);
+            return blog;
         }
 
         //public async Task<Blog_ViewModel> CreateBlog(Blog_ViewModel blog)
@@ -232,13 +252,11 @@ namespace ProjectDetails.Services
 
         public async Task<List<BlogCategory_ViewModel>> Get_AllBlogCategory()
         {
-            var data = await _db.BlogCategory_Tbl.Where(a => a.StatusId != 255).ToListAsync();
-            if (data == null)
-            {
-                return null;
-            }
-            var result = _mapper.Map<List<BlogCategory_ViewModel>>(data);
-            return result;
+            var data = await _db.BlogCategory_Tbl
+                .Where(a => a.StatusId != 255)
+                .ToListAsync();
+
+            return _mapper.Map<List<BlogCategory_ViewModel>>(data);
         }
 
         public async Task<BlogCategory_ViewModel> Get_BlogCategoryByID(int BlogID)

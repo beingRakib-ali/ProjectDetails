@@ -14,5 +14,7 @@ namespace ProjectDetails.ViewModels
         public int CreatedBy { get; set; }
         public string keyEntry1 { get; set; } = null!;
         public string keyEntry2 { get; set; } = null!;
+
     }
+
 }
